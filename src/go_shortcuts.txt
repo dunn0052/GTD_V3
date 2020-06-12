@@ -1,0 +1,8 @@
+scripts;C:\Users\Kevin\Desktop\cmd_scripts
+desktop;C:\Users\Kevin\Desktop
+f;F:\
+c;C:\
+f;f:
+c;c:
+desktop;C:\Users\Kevin\Desktop
+reddit;C:\Users\Kevin\Desktop\reddit_pygame
