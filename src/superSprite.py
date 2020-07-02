@@ -49,7 +49,7 @@ class SuperSprite(pl.sprite.Sprite, Context):
         # set starting image
         self.currentImage = 0
         self.rect = self.getRect(self.image)
-        self.radius_2 = self.rect.width**2/4 + self.rect.height**2/4
+        self.radius_2 = self.rect.width**2 #self.rect.width**2/4 + self.rect.height**2/4
         # buffer used because hitboxes are too fat. 
         self.hitboxBuffer = 10
         self.hitbox = pygame.Rect(self.x + self.hitboxBuffer, self.y, self.rect.width - self.hitboxBuffer, self.rect.height//2)

@@ -132,7 +132,7 @@ class Level:
         rect = self.PC.interactionBox
 
         # DEBUG
-        self.v = VertexRectangle(rect.x, rect.y, rect.width, rect.height,  (0,0,0))
+        #self.v = VertexRectangle(rect.x, rect.y, rect.width, rect.height,  (0,0,0))
 
         #eventualy move to tile
         self.PC.moveTo(x, y)
@@ -180,13 +180,13 @@ class Level:
         self.updateSound()
         self.animate()
         # DEBUG
-        self.v.move_absolute(self.PC.interactionBox.x, self.PC.interactionBox.y)
+        #self.v.move_absolute(self.PC.interactionBox.x, self.PC.interactionBox.y)
 
     def updateOffset(self, offset):
         for layer in self.layers:
             layer.updateDrawingOffset(offset)
         # DEBUG
-        self.v.move_relative(-offset[0], -offset[1])
+        #self.v.move_relative(-offset[0], -offset[1])
 
     def updateSound(self):
         self.soundBuffer.clear()
@@ -214,4 +214,4 @@ class Level:
         self.batch.draw()
 
         #DEBUG
-        self.v.draw()
+        #self.v.draw()

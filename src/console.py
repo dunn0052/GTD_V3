@@ -46,7 +46,7 @@ class Console:
         self.game.updateOffset(self.camera.camera.topleft)
 
         #DEBUG
-        self.game.currentLevel.v.move_relative(self.camera.camera.left, self.camera.camera.top)
+        #self.game.currentLevel.v.move_relative(self.camera.camera.left, self.camera.camera.top)
 
     def on_draw(self):
         self.screen.clear()

@@ -42,6 +42,8 @@ class PC(SuperSprite):
             self.y - self.buffer, self.rect.width + 2*self.buffer, \
             self.rect.height + 2*self.buffer)
 
+        self.radius_2 = (self.rect.width + self.buffer)**2
+
         # Var to let the level know that PC is looking for someone to talk to
         self.textNotify = False
 
@@ -110,12 +112,12 @@ class PC(SuperSprite):
 
     
     def anySideCollision(self, rectangle):
-        # ugly but quicka
+        # ugly but quick
         # interaction only when facing npc
-        k = self.pointInCircle(rectangle.center[0], rectangle.bottom)
+        # flip rectangle top/bottom because rectangle coordinates are upsideown
         return \
-            (self.direction == self.__DOWN and self.pointInCircle(rectangle.center[0], rectangle.top)) or \
-            (self.direction == self.__UP and self.pointInCircle(rectangle.center[0], rectangle.bottom)) or \
+            (self.direction == self.__DOWN and self.pointInCircle(rectangle.center[0], rectangle.bottom)) or \
+            (self.direction == self.__UP and self.pointInCircle(rectangle.center[0], rectangle.top)) or \
             (self.direction == self.__RIGHT and self.pointInCircle(rectangle.left, rectangle.center[1])) or \
             (self.direction == self.__LEFT and self.pointInCircle(rectangle.right, rectangle.center[1]))
 

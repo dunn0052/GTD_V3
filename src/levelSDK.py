@@ -39,7 +39,7 @@ class PackedLevel:
         # should be it's own class
         self.tiles = pl.image.ImageGrid(imageList, rows=self.rows, columns=self.cols)
 
-    def get_tile(self, tileIndex):
+    def getTile(self, tileIndex):
         row = self.rows - (tileIndex // self.cols) - 1
         col = tileIndex % self.cols
         return self.tiles[row, col]
@@ -57,6 +57,8 @@ class PackedLevel:
                 reader = csv.reader(f, delimiter=',')
                 for row in reader:
                     data.append(row)
+        else:
+            print("Can't open: " + filename)
         #reverse because Tiled enumerates backwards from what pyglet expects
         return reversed(data)
 
@@ -72,7 +74,7 @@ class PackedLevel:
                     for col, tile in enumerate(tiles):
                         if int(tile) > -1:
                             ent = levelTile.LevelTile(x = col * self.tileHeight, y = row *self.tileWidth, \
-                                image = self.get_tile(int(tile)), key = int(tile))
+                                image = self.getTile(int(tile)), key = int(tile))
                             self.level.WALL_LAYER.add(ent)
                             self.level.solid_sprites[(col, -row)] = ent
 
@@ -82,7 +84,7 @@ class PackedLevel:
                     for col, tile in enumerate(tiles):
                         if int(tile) > -1:
                             ent = levelTile.LevelTile(x = col * self.tileHeight, y = row * self.tileWidth, \
-                                image = self.get_tile(int(tile)), key = int(tile))
+                                image = self.getTile(int(tile)), key = int(tile))
                             self.level.OVER_LAYER.add(ent)
 
     def loadNPCs(self, filename):
@@ -91,7 +93,7 @@ class PackedLevel:
         for row, tiles in enumerate(data):
                     for col, tile in enumerate(tiles):
                         if int(tile) > -1:
-                            ent = npc.NPC(col * self.tileHeight, row * self.tileWidth, self.get_tile(int(tile)), 1, 0, 0, 0, 0, 0, 0)
+                            ent = npc.NPC(col * self.tileHeight, row * self.tileWidth, self.getTile(int(tile)), 1, 0, 0, 0, 0, 0, 0)
                             self.level.NPC_LAYER.add(ent)
                             self.level.npc_sprites[str(npc_index)] = ent
                             self.level.solid_sprites[(col, -row)] = ent
@@ -103,13 +105,16 @@ class PackedLevel:
         self.level.npc_sprites[str(index)].setText(text)
         self.level.talking_sprites.add(self.level.npc_sprites[str(index)])
 
-    def loadJson(self, path):
+    def loadJSON(self, path):
         # should cause an error because it won't be dynamic
-        with open(path, "r") as read_file:
-            return json.load(read_file)
+        try:
+            with open(path, "r") as read_file:
+                return json.load(read_file)
+        except:
+            print("Can't open: " + path)
 
     def loadNPCText(self, path):
-        data = self.loadJson(path)
+        data = self.loadJSON(path)
         npc_id = str(data["NPC ID"])
         text = data["text"]
         if npc_id in self.level.npc_sprites:
