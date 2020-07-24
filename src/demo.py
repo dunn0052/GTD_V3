@@ -14,9 +14,18 @@ if __name__ == '__main__':
     l1.loadWalls("ICE_TOWN_Tile Layer 2.csv")
     l1.loadOverhead("ICE_TOWN_Tile Layer 3.csv")
     l1.setTextBox("textBackground.png", 0, 0, "super long text "*100)
-    #l1.loadLevelTriggers("ICE_TOWN_Tile Layer 4.csv")
+    l1.loadLevelTriggers("ICE_TOWN_Tile Layer 4.csv")
+    # set levels to nex
+    for t in l1.level.exit_triggers:
+        t.setLevel(1,0,0,0)
+    
     l1.loadNPCs("ICE_TOWN_Tile Layer 5.csv")
     l1.loadNPCText("..\\json\\test.json") # ID/text in json
+
+    l2 = PackedLevel()
+    l2.loadTileSheet("NBIG.png", 80, 80)
+    l2.loadBackground("ICE_FIELD.png")
+
     char = PC("redPC.png", 10, 600, 450, 300, 0, 3, 3, 2, 2, 0,0)
     g = Game()
     g.setPC(char)
@@ -24,5 +33,6 @@ if __name__ == '__main__':
     s = Console()
     s.set_controller(c)
     g.addLevel(l1.unpackLevel())
+    g.addLevel(l2.unpackLevel())
     s.loadGame(g)
     s.run()

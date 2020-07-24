@@ -1,2 +1,11 @@
 *.png
 *.pyc
+src/__pycache__/camera.cpython-37.pyc
+src/__pycache__/console.cpython-37.pyc
+src/__pycache__/level.cpython-37.pyc
+src/__pycache__/levelSDK.cpython-37.pyc
+src/__pycache__/npc.cpython-37.pyc
+src/__pycache__/PC.cpython-37.pyc
+src/__pycache__/superSprite.cpython-37.pyc
+src/__pycache__/superSpriteGroup.cpython-37.pyc
+src/__pycache__/triggerGroup.cpython-37.pyc

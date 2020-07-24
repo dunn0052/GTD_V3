@@ -14,6 +14,8 @@ class NPC(SuperSprite):
 
         self.text = [""]
 
+
+# should just load the csv path
     def setText(self, text):
 
         if isinstance(text, str):

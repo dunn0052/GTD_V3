@@ -1,6 +1,5 @@
 import pygame as pg
 import pyglet as pl 
-from functools import partial
 
 class SuperSpriteGroup:
 
@@ -37,9 +36,7 @@ class SuperSpriteGroup:
             sprite.updateTime(dt)
 
     def updateDrawingOffset(self, offsetCoords):
-        # offset is constant each iteration so it can be curried
-        foffset = partial(SuperSpriteGroup.offset, offsetCoords)
-        self.sprites = [foffset(sprite) for sprite in self.sprites]
+        self.sprites = [SuperSpriteGroup.offset(offsetCoords, sprite) for sprite in self.sprites]
 
     def __iter__(self):
         for sprite in self.sprites:

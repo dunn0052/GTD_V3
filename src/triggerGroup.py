@@ -1,6 +1,3 @@
-
-from functools import partial
-
 class TriggerContainer:
 
     @staticmethod
@@ -22,7 +19,8 @@ class TriggerContainer:
         for tile in self.tiles:
             yield tile
 
+    def __getitem__(self, index):
+        return self.tiles[index]
+
     def updateDrawingOffset(self, offsetCoords):
-        # offset is constant each iteration so it can be curried
-        foffset = partial(TriggerContainer.offset, offsetCoords)
-        self.tiles = [foffset(tile) for tile in self.tiles]
+        self.tiles = [TriggerContainer.offset(offsetCoords, tile) for tile in self.tiles]
