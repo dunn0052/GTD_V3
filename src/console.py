@@ -23,7 +23,8 @@ class Console:
         # camera size of screen
         self.camera = Camera(Width, Height)
 
-        self.screen = pl.window.Window(Width, Height,visible=True, vsync = True, fullscreen=True)
+        # vsync = False for max FPS
+        self.screen = pl.window.Window(Width, Height,visible=True, vsync = False, fullscreen=True)
         self.clock = pl.clock
         self.fps_display = pl.window.FPSDisplay(window=self.screen)
         self.on_draw = self.screen.event(self.on_draw)

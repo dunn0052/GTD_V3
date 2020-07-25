@@ -2,10 +2,8 @@ class TriggerContainer:
 
     @staticmethod
     def offset(offset, tile):
-        x = tile.origin.x + offset[0]
-        y = tile.origin.y + offset[1]
-        tile.x = tile.rect.x = x 
-        tile.y = tile.rect.y =y
+        tile.x = tile.rect.x = tile.origin.x + offset[0]
+        tile.y = tile.rect.y = tile.origin.y + offset[1]
         return tile
 
     def __init__(self):

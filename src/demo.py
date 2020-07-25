@@ -15,13 +15,14 @@ if __name__ == '__main__':
     l1.loadOverhead("ICE_TOWN_Tile Layer 3.csv")
     l1.setTextBox("textBackground.png", 0, 0, "super long text "*100)
     l1.loadLevelTriggers("ICE_TOWN_Tile Layer 4.csv")
-    # set levels to nex
+    # set levels to l2
     for t in l1.level.exit_triggers:
         t.setLevel(1,0,0,0)
     
     l1.loadNPCs("ICE_TOWN_Tile Layer 5.csv")
     l1.loadNPCText("..\\json\\test.json") # ID/text in json
 
+    # ice field level
     l2 = PackedLevel()
     l2.loadTileSheet("NBIG.png", 80, 80)
     l2.loadBackground("ICE_FIELD.png")
