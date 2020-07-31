@@ -21,6 +21,7 @@ class LevelTile(pl.sprite.Sprite):
         self.x, self.y = x,y
         self.rect.x = x
         self.rect.y = y
+        self.hitbox = self.rect
         self.origin = pg.Vector2(self.x, self.y)
         
     # should only be used for movable tiles

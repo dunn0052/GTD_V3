@@ -165,15 +165,17 @@ class SuperSprite(pl.sprite.Sprite, Context):
         self.y += y
         self.rect.x = self.x
         self.rect.y = self.y
-        self.hitbox.x = self.x + self.hitboxBuffer
-        self.hitbox.y = self.y + self.hitbox.height
+        self.hitbox.clamp_ip(self.rect)
+        #self.hitbox.x = self.x + self.hitboxBuffer
+        #self.hitbox.y = self.y + self.hitbox.height
 
 # move to coordinates
     def moveTo(self, x, y):
         self.rect.x, self.x = x, x
         self.rect.y, self.y = y, y
-        self.hitbox.x = self.x + self.hitboxBuffer
-        self.hitbox.y = self.y + self.hitbox.height
+        self.hitbox.clamp_ip(self.hitbox)
+        #self.hitbox.x = self.x + self.hitboxBuffer
+        #self.hitbox.y = self.y + self.hitbox.height
 
     def moveToTile(self, x, y, tileWidth, tileHeight):
         self.moveTo(x * tileWidth, y * tileHeight)
@@ -187,11 +189,11 @@ class SuperSprite(pl.sprite.Sprite, Context):
 
     def collideRect(self, box, group):
         for sprite in group:
-            if sprite.rect.colliderect(box):
+            if sprite.hitbox.colliderect(box):
                 return sprite
 
     def collideHitbox(self, other):
-        return other.rect.colliderect(self.hitbox)
+        return other.hitbox.colliderect(self.hitbox)
 
     def pointInCircle(self, x, y):
         k = (x - self.rect.centerx)**2 + (y - self.rect.centery)**2

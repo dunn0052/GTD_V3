@@ -3,6 +3,7 @@ from math import sqrt
 import pygame as pg
 from pygame import Vector2 as v2
 import pyglet as pl
+from sprite_collision_c import *
 
 class PC(SuperSprite):
     # in theory these should be passed from SuperSPrite
@@ -141,7 +142,9 @@ class PC(SuperSprite):
         self.rect.x = self.origin.x
         self.hitbox.x = self.origin.x
         self.interactionBox.x = self.origin.x - self.buffer
-        self.collideX(self.collideRect(self.hitbox, group))
+        s = collide_hitbox_group(self, group)
+        h = list(group)[s] if s != -1 else None
+        self.collideX(h)
 
     # if colliding with something move PC to the edge of it
     def collideX(self, ent):

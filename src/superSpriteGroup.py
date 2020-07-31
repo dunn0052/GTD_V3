@@ -1,5 +1,6 @@
 import pygame as pg
 import pyglet as pl 
+from sprite_collision_c import *
 
 class SuperSpriteGroup:
 
@@ -14,8 +15,8 @@ class SuperSpriteGroup:
 
     @staticmethod
     def offset(offset, sprite):
-        x = sprite.origin.x + offset[0]
-        y = sprite.origin.y + offset[1]
+        x = sprite.hitbox.x = sprite.origin.x + offset[0]
+        y = sprite.hitbox.y = sprite.origin.y + offset[1]
         sprite.update(x = x, y = y)
         return sprite
 
@@ -47,3 +48,9 @@ class SuperSpriteGroup:
 
     def sound(self):
         pass
+
+    def collideAny(self, sprite):
+        return collide_rect_group(sprite, self.sprites)
+
+    def whichCollide(self, sprite):
+        return self.sprites[collide_hitbox_group(sprite)]

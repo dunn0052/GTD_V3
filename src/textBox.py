@@ -3,6 +3,7 @@ import pyglet as pl
 from superSpriteGroup import SuperSpriteGroup as sg
 from context import Context
 
+# debug box
 class Rectangle(object):
     '''Draws a rectangle into a batch.'''
     def __init__(self, x1, y1, x2, y2, batch):

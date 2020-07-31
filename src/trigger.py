@@ -14,7 +14,8 @@ class Trigger:
         # no image to draw, just used for rect dimensions
         self.rect = Rect(x, y + height, width, height)
         self.rect.x = x 
-        self.rect.y = y 
+        self.rect.y = y
+        self.hitbox = self.rect
         self.origin = vec(self.x, self.y)
 
     # should only be used for movable tiles
