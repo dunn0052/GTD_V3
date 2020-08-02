@@ -22,6 +22,42 @@ class Text:
         self._index = 0
         self.done = False
 
+        lines = list()
+        wordlist = list()
+
+        for word in text.split():
+            # check to see if there is a manual line break
+            if "\\n" in word:
+                w = word.split("\\n")
+
+                for letter in w:
+                    if letter == "":
+                        lines.append(" ".join(wordlist))
+                        wordlist.clear()
+                    else:
+                        # start new line
+                        wordlist.append(letter)
+
+            else:
+                wordlist.append(word)
+
+                if len(" ".join(wordlist)) * 10 > 100:
+                    
+                    lines.append(" ".join(wordlist[:-1]))
+
+                    wordlist.clear()
+                    # start new line
+                    wordlist.append(word)
+
+    if " ".join(wordlist) != '':
+        lines.append(" ".join(wordlist))                
+
+    if lines:
+        left = (left + (width / 2)) - \
+                ((len(lines[0]) * pixels_per_letter) / 2)
+    else:
+        left = 0
+
     def __iter__(self):
         for letter in self._text:
             yield letter
@@ -52,7 +88,9 @@ class TextBox(Context):
 
         # the text box image
         image = pl.resource.image(image)
+        # change it to a sprite
         self.box = pl.sprite.Sprite(image, x, y)
+        # add it to the sprite group to be rendered
         self.textBoxSuperSpriteGroup.add(self.box)
     
         # to hold the text chunks to fit the string
@@ -70,10 +108,14 @@ class TextBox(Context):
         fontHeight = self.font.ascent - self.font.descent
         fontWidth = self.font.max_glyph_width
         
+        # number of total lines
         numLines = self.box.height//fontHeight - 1
+        # height of document in pixels
         docHeight = numLines * fontHeight
 
+        # how many letters per line
         numLetters = self.box.width//fontWidth
+        # horizontal size of text box in pixels
         docWidth = numLetters * fontWidth
 
         # Number of total characters per text box.
