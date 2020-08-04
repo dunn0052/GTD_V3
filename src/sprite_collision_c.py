@@ -1,15 +1,23 @@
 from ctypes import *
 from random import randint
 import time
+from rect import C_RECT, C_POINT
 
+# load c library
 c_lib = CDLL("c_collision.so")
 
+# rectangle_collide
 c_lib.rectangle_collide.argtypes = [c_int]*8
 c_lib.rectangle_collide.restype = c_int
 
+# collide_group
 c_lib.collide_group.argtypes = [c_int]*4 + [POINTER(c_int)] + [c_int] 
 c_lib.collide_group.restype = c_int
 
+# collide_rects - natively detects C_RECT collision
+c_lib.collide_rects.argtypes = [POINTER(C_RECT), POINTER(C_RECT), c_int]
+# return index of overlap or -1 if not found
+c_lib.collide_rect.restype = c_int
 
 def rect_to_int(rect):
     return (rect.top, rect.left, rect.bottom, rect.right)
@@ -36,3 +44,7 @@ def collide_rect_group(caller, group):
 def collide_hitbox_group(caller, group):
     coordinate_array = (c_int*(len(group)*4))(*list(get_h_coords(group)))
     return c_lib.collide_group(caller.hitbox.top, caller.hitbox.left, caller.hitbox.bottom, caller.hitbox.right, coordinate_array, len(group))
+
+def collide_group(caller, group):
+    rect_array = (C_RECT * len(group))(*group)
+    return c_lib.collide_rects(caller, rect_array, c_int(len(group)))

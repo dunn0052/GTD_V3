@@ -26,6 +26,7 @@ if __name__ == '__main__':
     l2 = PackedLevel()
     l2.loadTileSheet("NBIG.png", 80, 80)
     l2.loadBackground("ICE_FIELD.png")
+    l2.loadWalls("ICE_FIELD_Tile Layer 2.csv")
 
     char = PC("redPC.png", 10, 600, 450, 300, 0, 3, 3, 2, 2, 0,0)
     g = Game()

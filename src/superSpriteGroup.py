@@ -15,8 +15,8 @@ class SuperSpriteGroup:
 
     @staticmethod
     def offset(offset, sprite):
-        x = sprite.hitbox.x = sprite.origin.x + offset[0]
-        y = sprite.hitbox.y = sprite.origin.y + offset[1]
+        x = sprite.origin.x + offset[0]
+        y = sprite.origin.y + offset[1]
         sprite.update(x = x, y = y)
         return sprite
 

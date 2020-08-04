@@ -131,6 +131,7 @@ class PC(SuperSprite):
         self.origin.y += y_distance
         self.rect.y = self.origin.y
         self.hitbox.y = self.origin.y
+        self.c_rect.bottom = self.origin.y
         self.interactionBox.y = self.origin.y - self.buffer
         self.collideY(self.collideRect(self.hitbox, group))
 
@@ -141,8 +142,11 @@ class PC(SuperSprite):
         self.origin.x += x_distance
         self.rect.x = self.origin.x
         self.hitbox.x = self.origin.x
+        self.c_rect.left = self.origin.x
         self.interactionBox.x = self.origin.x - self.buffer
-        s = collide_hitbox_group(self, group)
+        #s = collide_hitbox_group(self, group)
+        #h = list(group)[s] if s != -1 else None
+        s = collide_group(self.c_rect.data, list(sprite.c_rect.data for sprite in group))
         h = list(group)[s] if s != -1 else None
         self.collideX(h)
 
@@ -151,12 +155,15 @@ class PC(SuperSprite):
         if not ent:
             return None
         if self.vx > 0:
-            self.origin.x = ent.rect.left - self.hitbox.width
+            # should be based on self c_rect width
+            self.origin.x = ent.c_rect.left - self.rect.width
         if self.vx < 0:
-            self.origin.x = ent.rect.right
+            self.origin.x = ent.c_rect.right + self.rect.width
         self.rect.x = self.origin.x
         self.interactionBox.x = self.origin.x - self.buffer
         self.hitbox.x = self.origin.x
+        self.c_rect.left = self.origin.x
+        print(ent.x, ent.y)
 
         #ent.playSound("bump")
 
@@ -170,6 +177,7 @@ class PC(SuperSprite):
         self.rect.y = self.origin.y
         self.interactionBox.y = self.origin.y - self.buffer
         self.hitbox.y = self.origin.y
+        self.c_rect.bottom = self.origin.y
 
         #ent.playSound("bump")
 

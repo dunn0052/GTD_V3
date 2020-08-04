@@ -1,6 +1,8 @@
 import pygame as pg
 import pyglet as pl 
 
+from rect import Rect
+
 class LevelTile(pl.sprite.Sprite):
 
     _images = dict()
@@ -18,11 +20,17 @@ class LevelTile(pl.sprite.Sprite):
         self._images[self.key] = image
         #self.mask = pg.mask.from_surface(self._images[self.key])
         self.rect = self.getRect(image)
+        self.c_rect = self.getCRect(x, y, self._images[self.key])
         self.x, self.y = x,y
         self.rect.x = x
         self.rect.y = y
         self.hitbox = self.rect
         self.origin = pg.Vector2(self.x, self.y)
+
+
+    @staticmethod
+    def getCRect(x, y, image):
+        return Rect(x, y, image.height, image.width)
         
     # should only be used for movable tiles
     def updateTime(self, dt):

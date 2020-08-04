@@ -1,0 +1,5 @@
+c_collision: c_collision.c
+    gcc -o c_collision.so -shared -fPIC -O2 c_collision.c
+
+clean:
+    rm c_collision.so

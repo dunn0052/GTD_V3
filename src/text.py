@@ -4,6 +4,23 @@ from superSpriteGroup import SuperSpriteGroup as sg
 from context import Context
 
 
+class TextIterator:
+
+    def __init__(self, val = None):
+        self._innerList = list(val)
+        self._index = 0
+
+    def __next__(self):
+        if self._index > 0 and self._index < len(self._innerList):
+            item = self._innerList[self._index]
+            self._index += 1
+            yield item
+        else:
+            yield None
+
+    def reset(self):
+        self._index = 0
+
 class Textbox(context):
     Boxgroup = None
     TextGroup = None
@@ -18,13 +35,16 @@ class Textbox(context):
 
         self._makeWindow(image, coord)
 
-        self._makeText(fontColor, fontSize, backgrounColor, fontFace)
+        self._makeText(fontColor, fontSize, (0,0,0,255), fontFace)
 
 
     def _loadBatch(self, batch):
         # make drawable batches for box and then text
         self.textBoxSuperSpriteGroup = sg(batch)
         self.textSuperSpriteGroup = sg(batch) 
+
+        Textbox.Boxgroup = self.textBoxSuperSpriteGroup.group
+        Textbox.TextGroup = self.textSuperSpriteGroup.group
 
     # create backing window for display
     def _makeWindow(self, batch, image, coord):
@@ -37,13 +57,18 @@ class Textbox(context):
         # add the box to the group
         self.textBoxSuperSpriteGroup.add(self.box)
 
-    def _makeText(self, fontColor = (0,0,0,255), fontSize = 50, backgrounColor = (255,255,255,255), fontName = 'Times New Roman'):
+    def _makeText(self, fontColor = (0,0,0,255), fontSize = 50, backgroundColor = (255,255,255,255), fontName = 'Times New Roman'):
 
         self._document = pl.text.document.UnformattedDocument("")
                 self.document.set_style\
-            (0, len(self.document.text), dict(color=fontColor, \
-             font_size = fontSize, background_color = backgrounColor, \
+            (0, len(self._document.text), dict(color=fontColor, \
+             font_size = fontSize, background_color = backgroundColor, \
              font = fontName))
+
+        font = self._document.get_font()
+        self._fontWidth = font.max_glyph_width
+        self._fontHeight = font.ascent - font.descent
+        self._boxWidth = self.box.width
 
     @property
     def text(self):
@@ -52,7 +77,7 @@ class Textbox(context):
     @text.setter
     def text(self, value):
 
-        if self._text != value and self._fontwidth and self._boxwidth:
+        if self._text != value and self._fontWidth and self._boxwidth:
             self._text = value
             # lines in text to be shown - cleared if there was old text
             self.lines = list()

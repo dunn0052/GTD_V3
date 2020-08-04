@@ -22,42 +22,6 @@ class Text:
         self._index = 0
         self.done = False
 
-        lines = list()
-        wordlist = list()
-
-        for word in text.split():
-            # check to see if there is a manual line break
-            if "\\n" in word:
-                w = word.split("\\n")
-
-                for letter in w:
-                    if letter == "":
-                        lines.append(" ".join(wordlist))
-                        wordlist.clear()
-                    else:
-                        # start new line
-                        wordlist.append(letter)
-
-            else:
-                wordlist.append(word)
-
-                if len(" ".join(wordlist)) * 10 > 100:
-                    
-                    lines.append(" ".join(wordlist[:-1]))
-
-                    wordlist.clear()
-                    # start new line
-                    wordlist.append(word)
-
-    if " ".join(wordlist) != '':
-        lines.append(" ".join(wordlist))                
-
-    if lines:
-        left = (left + (width / 2)) - \
-                ((len(lines[0]) * pixels_per_letter) / 2)
-    else:
-        left = 0
-
     def __iter__(self):
         for letter in self._text:
             yield letter

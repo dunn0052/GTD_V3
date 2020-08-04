@@ -4,6 +4,7 @@ from math import sqrt
 import keyboardInput as KB
 import pyglet as pl
 from context import Context
+from rect import Rect
 '''
 This class is the base class for all game sprites
 it has basic functions needed for sprites
@@ -49,11 +50,12 @@ class SuperSprite(pl.sprite.Sprite, Context):
         # set starting image
         self.currentImage = 0
         self.rect = self.getRect(self.image)
+        self.c_rect = self.getCRect(self.image)
         self.radius_2 = self.rect.width**2 #self.rect.width**2/4 + self.rect.height**2/4
         # buffer used because hitboxes are too fat. 
         self.hitboxBuffer = 10
         self.hitbox = pygame.Rect(self.x + self.hitboxBuffer, self.y, self.rect.width - self.hitboxBuffer, self.rect.height//2)
-
+        self.c_hitbox = Rect(self.x, self.y, img.width, img.width//2)
 
         self.angle = 0
         self.scale = 1
@@ -126,6 +128,10 @@ class SuperSprite(pl.sprite.Sprite, Context):
     def getRect(image):
         return pygame.Rect(image.x, image.y, image.width, image.height)
 
+    @staticmethod
+    def getCRect(image):
+        return Rect(image.x, image.y, image.height, image.width)
+
     # set image to specific frame
     def changeImage(self, index: int):
         self.currentImage = index
@@ -166,8 +172,8 @@ class SuperSprite(pl.sprite.Sprite, Context):
         self.rect.x = self.x
         self.rect.y = self.y
         self.hitbox.clamp_ip(self.rect)
-        #self.hitbox.x = self.x + self.hitboxBuffer
-        #self.hitbox.y = self.y + self.hitbox.height
+        self.c_hitbox.left = self.x + self.hitboxBuffer
+        self.c_hitbox.bottom = self.y + self.c_hitbox.height
 
 # move to coordinates
     def moveTo(self, x, y):
