@@ -2,6 +2,7 @@ import pygame as pg
 import pyglet as pl 
 from superSpriteGroup import SuperSpriteGroup as sg
 from context import Context
+from fastSprite import FastSprite
 
 # debug box
 class Rectangle(object):
@@ -53,7 +54,7 @@ class TextBox(Context):
         # the text box image
         image = pl.resource.image(image)
         # change it to a sprite
-        self.box = pl.sprite.Sprite(image, x, y)
+        self.box = FastSprite(image, x, y)
         # add it to the sprite group to be rendered
         self.textBoxSuperSpriteGroup.add(self.box)
     

@@ -23,11 +23,6 @@ class Rect:
     def data(self):
         return self._data
 
-    @data.setter
-    def data(self, value):
-        # can only have values set after creation
-        pass
-
     @property
     def bottom(self):
         return self._bottom
@@ -55,7 +50,7 @@ class Rect:
     def height(self):
         return self._height
 
-    @bottom.setter
+    @height.setter
     def height(self, value):
         if(self._height != value):
             self._height = int(value)
@@ -65,7 +60,7 @@ class Rect:
     def width(self):
         return self._width
 
-    @bottom.setter
+    @width.setter
     def width(self, value):
         if(self._width != value):
             self._width = int(value)
@@ -73,9 +68,9 @@ class Rect:
 
     @property
     def right(self):
-        return self.left + self.width
+        return self.left + self._width
 
     @property
     def top(self):
-        return self.bottom + self.height
+        return self.bottom + self._height
     

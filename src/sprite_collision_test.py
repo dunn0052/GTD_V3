@@ -1,2 +1,2 @@
-import sprite_collision_c
+import c_funcs
 

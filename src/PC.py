@@ -3,7 +3,7 @@ from math import sqrt
 import pygame as pg
 from pygame import Vector2 as v2
 import pyglet as pl
-from sprite_collision_c import *
+from c_funcs import *
 
 class PC(SuperSprite):
     # in theory these should be passed from SuperSPrite
@@ -129,24 +129,24 @@ class PC(SuperSprite):
             y_distance *= self.__i_sqrt_2
         #reverse b
         self.origin.y += y_distance
-        self.rect.y = self.origin.y
-        self.hitbox.y = self.origin.y
-        self.c_rect.bottom = self.origin.y
+        self._c_rect.bottom = self.origin.y
+        self.c_hitbox.bottom = self.origin.y
         self.interactionBox.y = self.origin.y - self.buffer
-        self.collideY(self.collideRect(self.hitbox, group))
+        # slow here
+        s = collide_group(self.c_hitbox.data, list(sprite._c_rect.data for sprite in group))
+        h = list(group)[s] if s != -1 else None
+        self.collideY(h)
 
     def movementUpdateX(self, diagonal, group):
         x_distance = self.vx * self.dt
         if diagonal:
             x_distance *= self.__i_sqrt_2
         self.origin.x += x_distance
-        self.rect.x = self.origin.x
-        self.hitbox.x = self.origin.x
-        self.c_rect.left = self.origin.x
+        self._c_rect.left = self.origin.x
+        self.c_hitbox.left = self.origin.x + self.hitboxBuffer
         self.interactionBox.x = self.origin.x - self.buffer
-        #s = collide_hitbox_group(self, group)
-        #h = list(group)[s] if s != -1 else None
-        s = collide_group(self.c_rect.data, list(sprite.c_rect.data for sprite in group))
+        # slow here
+        s = collide_group(self.c_hitbox.data, list(sprite._c_rect.data for sprite in group))
         h = list(group)[s] if s != -1 else None
         self.collideX(h)
 
@@ -155,30 +155,25 @@ class PC(SuperSprite):
         if not ent:
             return None
         if self.vx > 0:
-            # should be based on self c_rect width
-            self.origin.x = ent.c_rect.left - self.rect.width
+            # going right
+            self.origin.x = ent._c_rect.left - self._c_rect.width + self.hitboxBuffer
         if self.vx < 0:
-            self.origin.x = ent.c_rect.right + self.rect.width
-        self.rect.x = self.origin.x
-        self.interactionBox.x = self.origin.x - self.buffer
+            # going left
+            self.origin.x = ent._c_rect.right - self.hitboxBuffer
         self.hitbox.x = self.origin.x
-        self.c_rect.left = self.origin.x
-        print(ent.x, ent.y)
-
+        self._c_rect.left = self.origin.x
+        self.c_hitbox.left = self.origin.x + self.hitboxBuffer
         #ent.playSound("bump")
 
     def collideY(self, ent):
         if not ent:
             return None
         if self.vy > 0:
-            self.origin.y = ent.rect.top - self.hitbox.height
+            self.origin.y = ent._c_rect.bottom - self.c_hitbox.height
         if self.vy < 0:
-            self.origin.y = ent.rect.bottom
-        self.rect.y = self.origin.y
-        self.interactionBox.y = self.origin.y - self.buffer
-        self.hitbox.y = self.origin.y
-        self.c_rect.bottom = self.origin.y
-
+            self.origin.y = ent._c_rect.top
+        self._c_rect.bottom = self.origin.y
+        self.c_hitbox.bottom = self.origin.y
         #ent.playSound("bump")
 
     # level is set by the index of the PC on every frame

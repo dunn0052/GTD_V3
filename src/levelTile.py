@@ -1,9 +1,10 @@
 import pygame as pg
 import pyglet as pl 
+from fastSprite import FastSprite
 
 from rect import Rect
 
-class LevelTile(pl.sprite.Sprite):
+class LevelTile(FastSprite):
 
     _images = dict()
     _plImages = dict()
@@ -20,7 +21,7 @@ class LevelTile(pl.sprite.Sprite):
         self._images[self.key] = image
         #self.mask = pg.mask.from_surface(self._images[self.key])
         self.rect = self.getRect(image)
-        self.c_rect = self.getCRect(x, y, self._images[self.key])
+        self._c_rect = self.getCRect(x, y, self._images[self.key])
         self.x, self.y = x,y
         self.rect.x = x
         self.rect.y = y

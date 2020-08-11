@@ -5,6 +5,8 @@ from game import Game
 from levelSDK import PackedLevel
 from PC import PC
 
+import cProfile
+
 if __name__ == '__main__':
     c = Controller(0, keyboard=True)
 
@@ -37,4 +39,5 @@ if __name__ == '__main__':
     g.addLevel(l1.unpackLevel())
     g.addLevel(l2.unpackLevel())
     s.loadGame(g)
-    s.run()
+    #s.run()
+    cProfile.run("s.run()")

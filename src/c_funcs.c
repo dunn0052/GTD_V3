@@ -1,3 +1,4 @@
+// compile with cc -o c_collision.so -shared -fPIC c_collision.c
 
 #include <stdio.h>
 
@@ -69,9 +70,36 @@ int collide_rects(C_RECT caller, C_RECT others[], int length)
     {
         if( collide_rect(caller, others[i]) )
         {
-            printf("Hit sprite: %i\n", i);
+            //printf("Hit sprite: %i\n", i);
             return i;
         }
     }
+    // return an out of bounds index
     return -1;
+}
+
+void update_points(int x, int y, C_POINT group[], int length)
+{
+    int i = 0;
+    for(i = 0; i < length; i++)
+    {
+        group[i].x = group[i].x + x;
+        group[i].y = group[i].y + y;
+    }
+}
+
+void update_group_coords(int x, int y, int draw_coords[][8], int length)
+{
+    int i = 0;
+    for(i = 0; i < length; i++)
+    {
+        draw_coords[i][0] = draw_coords[i][0] + x;
+        draw_coords[i][1] = draw_coords[i][1] + y;
+        draw_coords[i][2] = draw_coords[i][2] + x;
+        draw_coords[i][3] = draw_coords[i][3] + y;
+        draw_coords[i][4] = draw_coords[i][4] + x;
+        draw_coords[i][5] = draw_coords[i][5] + y;
+        draw_coords[i][6] = draw_coords[i][6] + x;
+        draw_coords[i][7] = draw_coords[i][7] + y;
+    }
 }

@@ -5,14 +5,11 @@ import keyboardInput as KB
 import pyglet as pl
 from context import Context
 from rect import Rect
-'''
-This class is the base class for all game sprites
-it has basic functions needed for sprites
-There are virtual functions that can be used
-for interaction with buttons
-'''
 
-class SuperSprite(pl.sprite.Sprite, Context):
+from fastSprite import FastSprite
+
+
+class SuperSprite(FastSprite, Context):
     
     # used for diagonal distance calculations
     __i_sqrt_2 = 1/sqrt(2)
@@ -45,7 +42,7 @@ class SuperSprite(pl.sprite.Sprite, Context):
 
         self.x, self.y = x, y
         # image width, if not a multiple of 4 for each direction
-        self.frameWidth = img.width // frames
+        self.frameWidth = img.width
         self.frameHeight = img.height
         # set starting image
         self.currentImage = 0
@@ -55,7 +52,17 @@ class SuperSprite(pl.sprite.Sprite, Context):
         # buffer used because hitboxes are too fat. 
         self.hitboxBuffer = 10
         self.hitbox = pygame.Rect(self.x + self.hitboxBuffer, self.y, self.rect.width - self.hitboxBuffer, self.rect.height//2)
-        self.c_hitbox = Rect(self.x, self.y, img.width, img.width//2)
+        self.c_hitbox = Rect(self.x + self.hitboxBuffer, self.y, img.width - 2 * self.hitboxBuffer, img.height//2)
+
+
+        '''
+        ______________
+        |  c_rect    |
+        | ---------- |
+        | |c_hitbox| |
+        | |        | |
+        --------------
+        '''
 
         self.angle = 0
         self.scale = 1
@@ -70,6 +77,7 @@ class SuperSprite(pl.sprite.Sprite, Context):
         
         # finally move to proper position
         self.moveTo(self.x, self.y)
+        # change to ctypes
         self.origin = pygame.Vector2(self.x, self.y)
 
         #sounds
@@ -103,6 +111,8 @@ class SuperSprite(pl.sprite.Sprite, Context):
                             self.__DOWN:self.animation_start(self.__DOWN),\
                             self.__LEFT:self.animation_start(self.__LEFT),\
                             self.__RIGHT:self.animation_start(self.__RIGHT)}
+
+        
 
 #----- IMAGE FUNCTIONS -----#
 
