@@ -183,8 +183,10 @@ class Level:
         #self.v.move_absolute(self.PC.interactionBox.x, self.PC.interactionBox.y)
 
     def updateOffset(self, offset):
-        for layer in self.layers:
-            layer.updateDrawingOffset(offset)
+        if self.layers:
+            self.layers[0].updateDrawingOffset(offset)
+       
+
         # DEBUG
         #self.v.move_relative(-offset[0], -offset[1])
 
@@ -201,9 +203,12 @@ class Level:
             sprite.animate()
 
     def centerLevel(self, screenWidth, mapWidth):
-
+        if self.layers:
+            self.layers[0].updateDrawingOffset(screenWidth - mapWidth, 0)
+        '''
         for layer in self.layers:
             layer.updateDrawingOffset(screenWidth - mapWidth , 0)
+        '''
 
     # is the map too small for the screen dimensions? 
     # Needed for smallUpdate()

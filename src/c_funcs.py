@@ -1,64 +1,67 @@
-from ctypes import *
-from random import randint
-import time
-from rect import C_RECT, C_POINT
+from ctypes import c_long, c_int, POINTER, Structure, CDLL, c_float, pointer, byref, c_void_p
+
+class C_POINT(Structure):
+    _fields_ = [("x", c_float), 
+                ("y", c_float)]
+
+class C_RECT(Structure):
+    _fields_ = [("upper_left", C_POINT), 
+                ("lower_right", C_POINT)]
+
+# @TODO make define for number of points for coords
+class C_COORD(Structure):
+    _fields_ = [("origin", C_RECT), 
+                ("coords",  POINTER(c_float))]
+
 
 # load c library
 c_lib = CDLL("c_funcs.so")
 
-# rectangle_collide
-c_lib.rectangle_collide.argtypes = [c_int]*8
-c_lib.rectangle_collide.restype = c_int
-
-# collide_group
-c_lib.collide_group.argtypes = [c_int]*4 + [POINTER(c_int)] + [c_int] 
-c_lib.collide_group.restype = c_int
-
 # collide_rects - natively detects C_RECT collision
-c_lib.collide_rects.argtypes = [POINTER(C_RECT), POINTER(C_RECT), c_int]
-# return index of overlap or -1 if not found
+c_lib.collide_rect.argtypes = [C_RECT, C_RECT]
+# return 1 if collided or 0 if not
 c_lib.collide_rect.restype = c_int
 
-#collide_points
-c_lib.update_points.argtypes = [c_int]*2 + [POINTER(C_POINT)] + [c_int]
+# given all rects in a group, check which one is colliding
+c_lib.collide_sprite_group_rects.argtypes = [POINTER(C_COORD), POINTER(C_COORD), c_int]
+# -1 if none found, or index of first collided C_COORD
+c_lib.collide_sprite_group_rects.restype = c_int
 
 # update_group_coords(int x, int y, int draw_coords[][8], int length)
-c_lib.update_group_coords.argtypes = [c_int]*2 + [POINTER(c_int*8)] + [c_int]
-
-def rect_to_int(rect):
-    return (rect.top, rect.left, rect.bottom, rect.right)
-
-def get_coords(group):
-    for sprite in group:
-        yield sprite.rect.top 
-        yield sprite.rect.left 
-        yield sprite.rect.bottom 
-        yield sprite.rect.right
-
-def get_h_coords(group):
-    for sprite in group:
-        yield sprite.hitbox.top 
-        yield sprite.hitbox.left 
-        yield sprite.hitbox.bottom 
-        yield sprite.hitbox.right
-
-# caller = sprite, group = iterable of sprites
-def collide_rect_group(caller, group):
-    coordinate_array = (c_int*(len(group)*4))(*list(get_coords(group)))
-    return c_lib.collide_group(caller.rect.top, caller.rect.left, caller.rect.bottom, caller.rect.right, coordinate_array, len(group))
-
-def collide_hitbox_group(caller, group):
-    coordinate_array = (c_int*(len(group)*4))(*list(get_h_coords(group)))
-    return c_lib.collide_group(caller.hitbox.top, caller.hitbox.left, caller.hitbox.bottom, caller.hitbox.right, coordinate_array, len(group))
-
-def collide_group(caller, group):
-    rect_array = (C_RECT * len(group))(*group)
-    return c_lib.collide_rects(caller, rect_array, c_int(len(group)))
+# modifies a C_COORD coord array with and x, y offset
+#c_lib.update_sprite_group_coords.argtypes = [c_float]*2 + [POINTER(POINTER(POINTER(C_COORD)))] + [c_int]
+#return void
+c_lib.update_sprite_group_vertices.argtypes = [c_float]*2 + [POINTER(POINTER(C_COORD)), POINTER(c_float)]
 
 
-def update_points(x, y, group):
-    point_array = (C_POINT * len(group))(*group)
-    c_lib.update_points(x, y, point_array, len(group))
+# initiate 
+c_lib.initiate_coords.argtypes = [c_float]*4 + [POINTER(c_float), POINTER(C_COORD)]
+c_lib.initiate_coords.restype = POINTER(C_COORD)
 
-def update_sprite_group(x, y, sprite_coords):
-    return c_lib.update_group_coords(x, y, sprite_coords, len(sprite_coords))
+
+# move sprite by x,y and update it's drawing coordinates by that amount
+c_lib.move_sprite.argtypes = [c_float]*2 + [POINTER(C_COORD)] + [c_float * 8]
+# return void
+
+
+def collide_rect(caller, other):
+    return bool(c_lib.collide_rect(caller, other))
+
+def collide_sprite_group_rects(caller, sprite_coords):
+    return int(c_lib.collide_sprite_group_rects)
+
+def update_sprite_group_coords(x, y, sprite_coords):
+    c_lib.update_sprite_group_coords.argtypes = [c_float]*2 + [type(sprite_coords)] + [c_int]
+    c_lib.update_sprite_group_coords(c_float(x), c_float(y), sprite_coords, c_int(len(sprite_coords)))
+    after = 1
+
+def update_sprite_group_vertices(x, y, sprite_coords):
+    c_lib.update_sprite_group_coords.argtypes = [c_float]*2 + [type(sprite_coords)]
+    c_lib.update_sprite_group_vertices(c_float(x), c_float(y), sprite_coords)
+
+
+def initate_coords(x1, y1, x2, y2, vertex_array, coord):
+    return c_lib.initiate_coords(c_float(x1), c_float(y1), c_float(x2), c_float(y2), byref(vertex_array), coord)
+
+def move_sprite(x, y, sprite_coords):
+    c_lib.move_sprite(c_float(x), c_float(y), sprite_coords)

@@ -89,12 +89,16 @@ class PC(SuperSprite):
     # move PC if needed
     def controllerMove(self, solid_group = list(), trigger_group = list()):
         moved = self.move_flag_x or self.move_flag_y
+        x, y = 0,0
         if self.move_flag_x:
-            self.movementUpdateX(self.move_flag_y, solid_group)
+            x = self.movementUpdateX(self.move_flag_y, solid_group)
         if self.move_flag_y:
-            self.movementUpdateY(self.move_flag_x, solid_group)
+            y = self.movementUpdateY(self.move_flag_x, solid_group)
 
         if moved:
+            #self._data[0].coords[0] = c_float(x) + self._data[0].coords[0]
+            #self._data[0].coords[1] += c_float(y)
+            move_sprite(x, y, self._data)
             self.levelTriggerCollision(trigger_group)
         else:
             # reset to starting position
@@ -129,26 +133,22 @@ class PC(SuperSprite):
             y_distance *= self.__i_sqrt_2
         #reverse b
         self.origin.y += y_distance
-        self._c_rect.bottom = self.origin.y
-        self.c_hitbox.bottom = self.origin.y
-        self.interactionBox.y = self.origin.y - self.buffer
+        return y_distance
         # slow here
-        s = collide_group(self.c_hitbox.data, list(sprite._c_rect.data for sprite in group))
-        h = list(group)[s] if s != -1 else None
-        self.collideY(h)
+        #s = collide_group(self.c_hitbox.data, list(sprite._c_rect.data for sprite in group))
+        #h = list(group)[s] if s != -1 else None
+        #self.collideY(h)
 
     def movementUpdateX(self, diagonal, group):
         x_distance = self.vx * self.dt
         if diagonal:
             x_distance *= self.__i_sqrt_2
         self.origin.x += x_distance
-        self._c_rect.left = self.origin.x
-        self.c_hitbox.left = self.origin.x + self.hitboxBuffer
-        self.interactionBox.x = self.origin.x - self.buffer
+        return x_distance
         # slow here
-        s = collide_group(self.c_hitbox.data, list(sprite._c_rect.data for sprite in group))
-        h = list(group)[s] if s != -1 else None
-        self.collideX(h)
+        #s = collide_group(self.c_hitbox.data, list(sprite._c_rect.data for sprite in group))
+        #h = list(group)[s] if s != -1 else None
+        #self.collideX(h)
 
     # if colliding with something move PC to the edge of it
     def collideX(self, ent):

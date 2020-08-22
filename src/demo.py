@@ -15,7 +15,7 @@ if __name__ == '__main__':
     l1.loadBackground("ICE_TOWN_BG.png")
     l1.loadWalls("ICE_TOWN_Tile Layer 2.csv")
     l1.loadOverhead("ICE_TOWN_Tile Layer 3.csv")
-    l1.setTextBox("textBackground.png", 0, 0, "super long text "*100)
+    #l1.setTextBox("textBackground.png", 0, 0, "super long text "*100)
     l1.loadLevelTriggers("ICE_TOWN_Tile Layer 4.csv")
     # set levels to l2
     for t in l1.level.exit_triggers:
@@ -39,5 +39,5 @@ if __name__ == '__main__':
     g.addLevel(l1.unpackLevel())
     g.addLevel(l2.unpackLevel())
     s.loadGame(g)
-    #s.run()
-    cProfile.run("s.run()")
+    s.run()
+    #cProfile.run("s.run()")

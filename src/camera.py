@@ -14,9 +14,10 @@ class Camera:
     # stops on edge of map edges
     def update(self, level):
         target = level.PC
+        rect = target._data[0].origin
         self.mapSize(level.mapHeight, level.mapWidth)
-        x = target.origin.x + target.rect.width//2 - self.width // 2
-        y = target.origin.y + target.rect.height - self.height // 2
+        x = rect.upper_left.x + (rect.lower_right.x - rect.upper_left.x)//2 - self.width // 2
+        y = rect.lower_right.y + (rect.upper_left.y - rect.lower_right.y) - self.height // 2
         # limit scrolling to map size
         y = min(self.mapHeight - self.height, y)  # top
         x = min(self.mapWidth - self.width, x)  # right

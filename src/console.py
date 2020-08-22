@@ -26,7 +26,7 @@ class Console:
         # vsync = False for max FPS
         self.screen = pl.window.Window(Width, Height,visible=True, vsync = False, fullscreen=True)
         self.clock = pl.clock
-        self.fps_display = pl.window.FPSDisplay(window=self.screen)
+        #self.fps_display = pl.window.FPSDisplay(window=self.screen)
         self.on_draw = self.screen.event(self.on_draw)
         self.clock.schedule(self.loopUpdate)
 
@@ -52,7 +52,7 @@ class Console:
     def on_draw(self):
         self.screen.clear()
         self.game.draw()
-        self.fps_display.draw()
+        #self.fps_display.draw()
 
 
     def set_controller(self, controller):

@@ -1,6 +1,5 @@
 # this is a shortcut dict for keyboard input
 
-import pygame
 from enum import Enum
 
 try:

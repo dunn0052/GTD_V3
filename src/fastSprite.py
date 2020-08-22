@@ -1,6 +1,6 @@
 import sys
 import math
-from ctypes import c_int, Structure
+
 
 
 from pyglet.gl import *
@@ -11,6 +11,9 @@ from pyglet import image
 from pyglet.sprite import SpriteGroup
 
 from rect import Rect
+from c_funcs import initate_coords, C_COORD, C_RECT, C_POINT, c_lib, c_long
+
+from ctypes import c_int, Structure, POINTER, c_float, pointer, c_void_p, byref, addressof, cast
 
 _is_pyglet_doc_run = hasattr(sys, "is_pyglet_doc_run") and sys.is_pyglet_doc_run
 
@@ -38,10 +41,13 @@ class FastSprite(event.EventDispatcher):
                  batch=None,
                  group=None,
                  usage='dynamic',
-                 subpixel=False):
+                 subpixel=True):
 
         if batch is not None:
-            self._batch = batch      
+            self._batch = batch
+
+        self._x = x
+        self._y = y
 
         if isinstance(img, image.Animation):
             self._animation = img
@@ -53,12 +59,24 @@ class FastSprite(event.EventDispatcher):
         else:
             self._texture = img.get_texture()
 
-        self._c_rect = Rect(x, y, self._texture.height, self._texture.width)
+        self._c_rect = Rect(self._x, self._y, self._texture.height, self._texture.width)
+
         self._group = SpriteGroup(self._texture, blend_src, blend_dest, group)
         self._usage = usage
         self._subpixel = subpixel
         self._create_vertex_list()
 
+    def create_coords(self):
+        x1 = c_float(self._x)
+        y1 = c_float(self._y)
+        x2 = c_float(self._x + self._texture.width)
+        y2 = c_float(self._y + self._texture.width)
+        #self._c_coord = C_COORD(C_RECT(C_POINT(x1, y2), C_POINT(x2, y1)), \
+            #(c_int * 8)(x1, y1, x2, y1, x2, y2, x1, y2))
+        self._data = None
+        coord = C_COORD()
+        self.p = cast(addressof(self._vertex_list.vertices), POINTER(c_float))
+        self._data =  c_lib.initiate_coords(x1, y1, x2, y2, self.p, byref(coord))    
 
     def __del__(self):
         try:
@@ -205,8 +223,8 @@ class FastSprite(event.EventDispatcher):
         else:
             self._vertex_list = self._batch.add(
                 4, GL_QUADS, self._group, vertex_format, 'c4B', ('t3f', self._texture.tex_coords))
-        self._vertex_list.vertices = (c_int * 8 )(0,0,0,0,0,0,0,0)
-        self._update_position()
+        self.create_coords()
+        #self._update_position()
         self._update_color()
 
     def _update_position(self):
@@ -252,7 +270,7 @@ class FastSprite(event.EventDispatcher):
                         int(vertices[2]), int(vertices[3]),
                         int(vertices[4]), int(vertices[5]),
                         int(vertices[6]), int(vertices[7]) )
-        self._vertex_list.vertices[:] = vertices
+        #self._vertex_list.vertices[:] = vertices
 
     def _update_color(self):
         r, g, b = self._rgb
@@ -399,7 +417,7 @@ class FastSprite(event.EventDispatcher):
             self._scale_x = scale_x
         if scale_y is not None:
             self._scale_y = scale_y
-        self._update_position()
+        #self._update_position()
 
     @property
     def width(self):
@@ -493,7 +511,11 @@ class FastSprite(event.EventDispatcher):
         
     @property
     def coord_data(self):
-        return self._vertex_list.vertices
+        return self._data
+
+    @property
+    def vertexes(self):
+        return ctypes.cast(self._vertex_list.vertices, POINTER(c_int))
 
     if _is_pyglet_doc_run:
         def on_animation_end(self):
